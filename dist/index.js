@@ -8,7 +8,11 @@ const warframeEvents = require("./app-queries/events.json");
 const queryLanguages = require("./app-queries/languages.json");
 const event = new EventEmitter();
 const warframeAPI = `https://api.warframestat.us/pc/`; //path parameters+language
-event.addListener("start", getUserInput);
+event.addListener("start", async (warframeEvents, queryLanguages) => {
+    const input = await getUserInput(warframeEvents, queryLanguages);
+    const evalInput = await evaluateUserInput(input);
+    console.log(evalInput);
+});
 event.emit("start", warframeEvents, queryLanguages);
 async function getUserInput(wfEvents, languages) {
     console.log("Init wf cli");
@@ -29,16 +33,22 @@ async function getUserInput(wfEvents, languages) {
             choices: languages,
         },
     ]));
-    console.log({
-        eventType: getEventInput.eventType,
-        language: getEventInput.language,
-    });
     return {
         eventType: getEventInput.eventType,
         language: getEventInput.language,
     };
 }
-async function evaluateUserInput(input) { }
+async function evaluateUserInput({ eventType, language, }) {
+    const [chosenEvent] = warframeEvents.filter((event) => {
+        const eventName = Object.keys(event)[0];
+        return eventType === eventName.toString() && event;
+    });
+    console.log(chosenEvent);
+    return {
+        eventType: chosenEvent[eventType],
+        language,
+    };
+}
 async function fetchEventData(api, { eventType, language }) {
     try {
         const getData = await fetch(`${api}${eventType}?language=${language}`);
