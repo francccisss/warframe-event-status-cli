@@ -5,31 +5,43 @@ import Enquirer from "enquirer";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const warframeEvents = require("./app-queries/events.json");
-const languages = require("./app-queries/languages.json");
+const queryLanguages = require("./app-queries/languages.json");
 const event = new EventEmitter();
 const warframeAPI = `https://api.warframestat.us/pc/`; //path parameters+language
 event.addListener("start", getUserInput);
-event.emit("start", warframeEvents);
-async function getUserInput(wfEvents) {
+event.emit("start", warframeEvents, queryLanguages);
+async function getUserInput(wfEvents, languages) {
     console.log("Init wf cli");
-    const getInputs = (await Enquirer.prompt({
-        type: "select",
-        name: "eventType",
-        message: "Pick an event",
-        choices: wfEvents.map((item) => {
-            const keys = Object.keys(item);
-            return keys[0];
-        }),
-    }));
-    console.log({ e: getInputs.eventType });
+    const getEventInput = (await Enquirer.prompt([
+        {
+            type: "select",
+            name: "eventType",
+            message: "Pick an event",
+            choices: wfEvents.map((item) => {
+                const keys = Object.keys(item);
+                return keys[0];
+            }),
+        },
+        {
+            type: "select",
+            name: "language",
+            message: "Pick a language",
+            choices: languages,
+        },
+    ]));
+    console.log({
+        eventType: getEventInput.eventType,
+        language: getEventInput.language,
+    });
     return {
-        eventType: getInputs.eventType,
-        languageType: getInputs.languageType,
+        eventType: getEventInput.eventType,
+        language: getEventInput.language,
     };
 }
-async function fetchEventData(api, { eventType, languageType }) {
+async function evaluateUserInput(input) { }
+async function fetchEventData(api, { eventType, language }) {
     try {
-        const getData = await fetch(`${api}${eventType}?language=${languageType}`);
+        const getData = await fetch(`${api}${eventType}?language=${language}`);
         const parseToJson = await getData.json();
         console.log(parseToJson);
         return parseToJson;

@@ -6,7 +6,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const warframeEvents = require("./app-queries/events.json");
-const languages = require("./app-queries/languages.json");
+const queryLanguages = require("./app-queries/languages.json");
 const event = new EventEmitter();
 const warframeAPI = `https://api.warframestat.us/pc/`; //path parameters+language
 
@@ -29,11 +29,11 @@ type Language =
 	| "uk";
 interface IUserInput {
 	eventType: string;
-	languageType: Language;
+	language: Language;
 }
 
 event.addListener("start", getUserInput);
-event.emit("start", warframeEvents, languages);
+event.emit("start", warframeEvents, queryLanguages);
 
 async function getUserInput(
 	wfEvents: Array<{ [event: string]: string }>,
@@ -52,16 +52,19 @@ async function getUserInput(
 		},
 		{
 			type: "select",
-			name: "languageType",
-			message: "Pick an language",
+			name: "language",
+			message: "Pick a language",
 			choices: languages,
 		},
 	])) as IUserInput;
 
-	console.log({ e: getEventInput.eventType });
+	console.log({
+		eventType: getEventInput.eventType,
+		language: getEventInput.language,
+	});
 	return {
 		eventType: getEventInput.eventType,
-		languageType: getEventInput.languageType,
+		language: getEventInput.language,
 	};
 }
 
@@ -69,12 +72,10 @@ async function evaluateUserInput(input: IUserInput) {}
 
 async function fetchEventData(
 	api: string,
-	{ eventType, languageType }: IUserInput
+	{ eventType, language }: IUserInput
 ): Promise<IWarframeEventStatus | null> {
 	try {
-		const getData = await fetch(
-			`${api}${eventType}?language=${languageType}`
-		);
+		const getData = await fetch(`${api}${eventType}?language=${language}`);
 		const parseToJson = await getData.json();
 		console.log(parseToJson);
 		return parseToJson as IWarframeEventStatus;
