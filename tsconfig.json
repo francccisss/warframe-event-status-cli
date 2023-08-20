@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "ESNext",
     "module": "NodeNext",
     "rootDir": "./src",
     "outDir": "./dist",
