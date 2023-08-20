@@ -1,15 +1,28 @@
 #! /usr/bin/env node
 import EventEmitter from "events";
 import fetch from "node-fetch";
+import Enquirer from "enquirer";
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+// const warframeEvents = require("./app-queries/events.json");
+// const languages = require("./app-queries/languages.json")
 const event = new EventEmitter();
 const warframeAPI = `https://api.warframestat.us/pc/`; //path parameters+language
 console.log("Init wf cli");
 async function getUserInput() {
-    return { missionType: "this is a string", languageType: "en" };
+    const getInputs = await Enquirer.prompt({
+        type: "select",
+        name: "eventType",
+        message: "Pick an event",
+        choices: ["ge", "lo", "fa"],
+    });
+    console.log(getInputs);
+    return { eventType: "this is a string", languageType: "en" };
 }
-async function fetchEventData(api, { missionType, languageType }) {
+getUserInput();
+async function fetchEventData(api, { eventType, languageType }) {
     try {
-        const getData = await fetch(`${api}${missionType}?language=${languageType}`);
+        const getData = await fetch(`${api}${eventType}?language=${languageType}`);
         const parseToJson = await getData.json();
         console.log(parseToJson);
         return parseToJson;
@@ -19,8 +32,3 @@ async function fetchEventData(api, { missionType, languageType }) {
         return null;
     }
 }
-const data = await fetchEventData(warframeAPI, {
-    missionType: "sortie",
-    languageType: "en",
-});
-console.log(data);
