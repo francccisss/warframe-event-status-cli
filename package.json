@@ -22,7 +22,9 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "boxen": "^7.1.1",
     "enquirer": "^2.4.1",
+    "nanospinner": "^1.1.0",
     "node-fetch": "^3.3.2"
   }
 }
