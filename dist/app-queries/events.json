@@ -1,29 +1,23 @@
 [
-    {
-        "cetus (eidolon-hunts)": "cetusCycle"
-    },
-    {
-        "archon": "archonHunt"
-    },
-    {
-        "sortie": "sortie"
-    },
-    {
-        "cambion-drift": "cambionCycle"
-    },
-    {
-        "nightwave": "nightwave"
-    },
-    {
-        "Void trader": "voidTrader"
-    },
-    {
-        "Vault trader": "vaultTrader"
-    },
-    {
-        "Orb valis": "vaultTrader"
-    },
-    {
-        "Fissures": "fissures"
-    }
+  {
+    "cetus (eidolon-hunts)": "cetusCycle"
+  },
+  {
+    "archon": "archonHunt"
+  },
+  {
+    "sortie": "sortie"
+  },
+  {
+    "cambion-drift": "cambionCycle"
+  },
+  {
+    "Void trader": "voidTrader"
+  },
+  {
+    "Vault trader": "vaultTrader"
+  },
+  {
+    "Orb vallis": "vallisCycle"
+  }
 ]

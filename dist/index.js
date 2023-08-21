@@ -4,6 +4,7 @@ import { createRequire } from "module";
 import fetchEventData from "./fetchEvent.js";
 import { getUserInput } from "./inputs.js";
 import boxen from "boxen";
+import logCurrentEventStatus from "./logData.js";
 const require = createRequire(import.meta.url);
 const warframeEvents = require("./app-queries/events.json");
 const queryLanguages = require("./app-queries/languages.json");
@@ -21,4 +22,7 @@ event.on("start", async (warframeEvents, queryLanguages) => {
     event.emit("fetch", warframeAPI, input);
 });
 event.emit("start", warframeEvents, queryLanguages);
-event.on("fetch", fetchEventData);
+event.on("fetch", async (api, input) => {
+    const data = await fetchEventData(api, input);
+    const displayLog = await logCurrentEventStatus(data);
+});

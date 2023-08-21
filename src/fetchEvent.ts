@@ -4,7 +4,7 @@ import { createSpinner } from "nanospinner";
 async function fetchEventData(
   api: string,
   { eventType, language }: IUserInput
-): Promise<IWarframeEventStatus | null> {
+): Promise<IWarframeEventStatus | undefined> {
   const spinner = createSpinner("Fetching current event status...").start();
   try {
     const getData = await fetch(`${api}${eventType}?language=${language}`);
@@ -18,7 +18,7 @@ async function fetchEventData(
       text: "Sorry, but we are not able to get the current status of the chosen event",
       mark: "☠",
     });
-    return null;
+    return undefined;
   }
 }
 
