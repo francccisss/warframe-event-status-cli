@@ -24,6 +24,7 @@
   "dependencies": {
     "boxen": "^7.1.1",
     "cli-table": "^0.3.11",
+    "date-fns": "^2.30.0",
     "enquirer": "^2.4.1",
     "nanospinner": "^1.1.0",
     "node-fetch": "^3.3.2"

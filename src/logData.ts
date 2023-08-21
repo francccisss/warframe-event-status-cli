@@ -1,12 +1,13 @@
 import { traceDeprecation } from "process";
 import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
+import { format, parseISO } from "date-fns";
 import Table from "cli-table";
 
 async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const flatVertTable = createFlatTable(data, "hor");
+  const flatVertTable = createFlatTable(data, "vert");
   console.log(flatVertTable);
 }
 
@@ -53,6 +54,10 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
   const getKeys = Object.keys(data as object);
   if (relevantData.length !== 0) {
     for (let i = 0; i < relevantData.length; i++) {
+      if (relevantData[i] === "expiry" || relevantData[i] === "activation") {
+        const formatTime = format(parseISO(data[relevantData[i]]), "PPpp");
+        reducedData = { [relevantData[i]]: formatTime, ...reducedData };
+      }
       for (let j = 0; j < getKeys.length; j++) {
         if (relevantData[i] === getKeys[j]) {
           reducedData = {
@@ -65,6 +70,11 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
   }
 
   return reducedData;
+}
+
+function convertTimeFormat(time: string): string {
+  const newFormat = new Date(time);
+  return "";
 }
 
 export default logCurrentEventStatus;
