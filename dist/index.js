@@ -24,5 +24,5 @@ event.on("start", async (warframeEvents, queryLanguages) => {
 event.emit("start", warframeEvents, queryLanguages);
 event.on("fetch", async (api, input) => {
     const data = await fetchEventData(api, input);
-    const displayLog = await logCurrentEventStatus(data);
+    const displayLog = await logCurrentEventStatus(data, warframeEvents);
 });

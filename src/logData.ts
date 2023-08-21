@@ -6,15 +6,34 @@ async function logCurrentEventStatus(
   data: IWarframeEventStatus | undefined,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  console.log(data);
-  var table = new Table();
-  table.push(
-    { "Left Header 1": ["Value Row 1 Col 1", "Value Row 1 Col 2"] },
-    { "Left Header 2": ["Value Row 2 Col 1", "Value Row 2 Col 2"] }
-  );
-  console.log(table.toString());
+  const flatVertTable = createFlatTable(data, "hor");
+  console.log(flatVertTable);
 }
 
+function createFlatTable(
+  data: IWarframeEventStatus | undefined,
+  type: "vert" | "hor" = "vert"
+): string {
+  const getKeys = Object.keys(data as object);
+  if (type === "hor") {
+    const createColWidths = getKeys.map((key) => {
+      return 20;
+    });
+    var table = new Table({ head: getKeys, colWidths: createColWidths });
+    const newTable = Object.values(data as object);
+    table.push(newTable);
+    return table.toString();
+  } else if (type === "vert") {
+    var table = new Table();
+    for (const [key, value] of Object.entries(data as object)) {
+      const newTable = { [key]: value };
+      table.push(newTable);
+    }
+    return table.toString();
+  } else {
+    return "";
+  }
+}
 export default logCurrentEventStatus;
 
 // what to log from events
