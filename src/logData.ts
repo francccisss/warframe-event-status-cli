@@ -3,15 +3,15 @@ import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
 import Table from "cli-table";
 
 async function logCurrentEventStatus(
-  data: IWarframeEventStatus | undefined,
+  data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const flatVertTable = createFlatTable(data, "hor", "state", "timeLeft");
+  const flatVertTable = createFlatTable(data, "vert", "state", "timeLeft");
   console.log(flatVertTable);
 }
 
 function createFlatTable(
-  data: IWarframeEventStatus | undefined,
+  data: IWarframeEventStatus,
   type: "vert" | "hor" = "vert",
   ...args: any[]
 ): string {
@@ -20,28 +20,27 @@ function createFlatTable(
   if (args.length !== 0) {
     for (let i = 0; i < args.length; i++) {
       for (let j = 0; j < getKeys.length; j++) {
-        // need to get all of the elements from getKeys
         if (args[i] === getKeys[j]) {
-          console.log(args[i]);
           reducedData = { [args[i]]: data[args[i]], ...reducedData };
-        } else {
-          console.log("doesnt match any arguments");
         }
       }
     }
   }
-  console.log(reducedData);
+  const reducedDataKeys = Object.keys(reducedData);
   if (type === "hor") {
-    const createColWidths = getKeys.map((key) => {
+    const createColWidths = reducedDataKeys.map(() => {
       return 20;
     });
-    var table = new Table({ head: getKeys, colWidths: createColWidths });
-    const newTable = Object.values(data as object);
+    var table = new Table({
+      head: reducedDataKeys,
+      colWidths: createColWidths,
+    });
+    const newTable = Object.values(reducedData as object);
     table.push(newTable);
     return table.toString();
   } else if (type === "vert") {
     var table = new Table();
-    for (const [key, value] of Object.entries(data as object)) {
+    for (const [key, value] of Object.entries(reducedData as object)) {
       const newTable = { [key]: value };
       table.push(newTable);
     }
