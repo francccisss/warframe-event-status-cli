@@ -6,15 +6,31 @@ async function logCurrentEventStatus(
   data: IWarframeEventStatus | undefined,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const flatVertTable = createFlatTable(data, "hor");
+  const flatVertTable = createFlatTable(data, "hor", "state", "timeLeft");
   console.log(flatVertTable);
 }
 
 function createFlatTable(
   data: IWarframeEventStatus | undefined,
-  type: "vert" | "hor" = "vert"
+  type: "vert" | "hor" = "vert",
+  ...args: any[]
 ): string {
+  let reducedData = {};
   const getKeys = Object.keys(data as object);
+  if (args.length !== 0) {
+    for (let i = 0; i < args.length; i++) {
+      for (let j = 0; j < getKeys.length; j++) {
+        // need to get all of the elements from getKeys
+        if (args[i] === getKeys[j]) {
+          console.log(args[i]);
+          reducedData = { [args[i]]: data[args[i]], ...reducedData };
+        } else {
+          console.log("doesnt match any arguments");
+        }
+      }
+    }
+  }
+  console.log(reducedData);
   if (type === "hor") {
     const createColWidths = getKeys.map((key) => {
       return 20;
