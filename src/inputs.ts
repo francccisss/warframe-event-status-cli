@@ -1,17 +1,11 @@
-import {
-  IWarframeEventStatus,
-  IUserInput,
-  Language,
-  IWarframeEvents,
-} from "./types.js";
+import { IUserInput, Language, IWarframeEvents } from "./types.js";
 import Enquirer from "enquirer";
 
 export async function getUserInput(
   wfEvents: Array<IWarframeEvents>,
   languages: Array<Language>
 ): Promise<IUserInput> {
-  console.log("Init wf cli");
-  const getEventInput = (await Enquirer.prompt([
+  const input = (await Enquirer.prompt([
     {
       type: "select",
       name: "eventType",
@@ -29,22 +23,19 @@ export async function getUserInput(
     },
   ])) as IUserInput;
 
-  return {
-    eventType: getEventInput.eventType,
-    language: getEventInput.language,
-  };
-}
+  function returnChosenEvent(
+    { eventType, language }: IUserInput,
+    warframeEvents: Array<IWarframeEvents>
+  ): IUserInput {
+    const [chosenEvent] = warframeEvents.filter((event: IWarframeEvents) => {
+      const eventName = Object.keys(event)[0];
+      return eventType === eventName.toString() && event;
+    });
+    return {
+      eventType: chosenEvent[eventType],
+      language,
+    };
+  }
 
-export async function evaluateUserInput(
-  { eventType, language }: IUserInput,
-  warframeEvents: IWarframeEventStatus
-): Promise<IUserInput> {
-  const [chosenEvent] = warframeEvents.filter((event: IWarframeEvents) => {
-    const eventName = Object.keys(event)[0];
-    return eventType === eventName.toString() && event;
-  });
-  return {
-    eventType: chosenEvent[eventType],
-    language,
-  };
+  return returnChosenEvent(input, wfEvents);
 }
