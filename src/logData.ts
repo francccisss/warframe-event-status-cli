@@ -10,7 +10,7 @@ async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const { flatTable, nested } = createFlatTable(data, "hor");
+  const { flatTable, nested } = createFlatTable(data, "vert");
   if (nested) {
     console.log(flatTable);
     console.log(nested);
@@ -62,10 +62,25 @@ function createNestedTable(
   nestedTableArray: Array<IWarframeEventStatus>
 ): string {
   const nestedKey = Object.keys(nestedTableArray)[0];
-  const nestedValue = nestedTableArray[nestedKey as any];
-  const table = new Table({ head: ["", nestedKey] });
-  nestedValue.forEach((value: object) => {
-    table.push(value);
+  const nestedArray = nestedTableArray[nestedKey as any];
+  console.log(nestedArray);
+  const table = new Table({
+    head: [
+      "",
+      nestedKey,
+      ...(nestedArray.length !== 0 ? Object.keys(nestedArray[0]) : []),
+    ],
+  });
+
+  nestedArray.forEach((value: object, i: number) => {
+    let tmpArr = [];
+    for (let j = 0; j < Object.values(value).length; j++) {
+      Object.values(value)[j] !== null
+        ? tmpArr.push(Object.values(value)[j].toString())
+        : tmpArr.push("missing data");
+    }
+    console.log({ [i]: tmpArr });
+    table.push({ [i]: tmpArr });
   });
   return table.toString();
 }
@@ -81,6 +96,14 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
     "inventory",
     "missions",
     "type",
+    "nightmare",
+    "archwingRequired",
+    "boss",
+    "faction",
+    "credits",
+    "ducats",
+    "eta",
+    "missionType",
   ];
   let reducedData = {};
   let nestedData: IWarframeEventStatus | null = null;
@@ -132,24 +155,6 @@ export default logCurrentEventStatus;
 //     archwingRequired: false,
 //     isSharkwing: false,
 //   },
-//   {
-//     node: 'Martialis (Mars)',
-//     nodeKey: 'Martialis (Mars)',
-//     type: 'Excavation',
-//     typeKey: 'Excavation',
-//     nightmare: false,
-//     archwingRequired: false,
-//     isSharkwing: false,
-//   },
-//   {
-//     node: 'War (Mars)',
-//     nodeKey: 'War (Mars)',
-//     type: 'Assassination',
-//     typeKey: 'Assassination',
-//     nightmare: false,
-//     archwingRequired: false,
-//     isSharkwing: false,
-//   }
 // ],
 // boss: 'Archon Amar',
 // faction: 'Narmer',
