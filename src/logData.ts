@@ -3,21 +3,27 @@ import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
 import { format, parseISO } from "date-fns";
 import Table from "cli-table";
 import { isTypedArray } from "util/types";
+import { copyFileSync } from "fs";
+import { validateHeaderName } from "http";
 
 async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const flatVertTable = createFlatTable(data, "hor");
-  console.log(flatVertTable);
+  const { flatTable, nested } = createFlatTable(data, "hor");
+  if (nested) {
+    console.log(flatTable);
+    console.log(nested);
+    return;
+  }
+  console.log(flatTable);
 }
 
 function createFlatTable(
   data: IWarframeEventStatus,
   type: "vert" | "hor" = "vert"
-): string {
+): { flatTable: string; nested?: string } {
   const { reducedData, nestedData } = extractRelevantData(data);
-  console.log(nestedData);
   const reducedDataKeys = Object.keys(reducedData);
   if (type === "hor") {
     const createColWidths = reducedDataKeys.map(() => {
@@ -29,23 +35,39 @@ function createFlatTable(
     });
     const newTable = Object.values(reducedData as object);
     table.push(newTable);
-    return table.toString();
+    if (nestedData !== null) {
+      console.log("has nested data");
+      const nested = createNestedTable(nestedData);
+      return { flatTable: table.toString(), nested };
+    }
+    return { flatTable: table.toString() };
   } else if (type === "vert") {
     var table = new Table();
     for (const [key, value] of Object.entries(reducedData as object)) {
       const newTable = { [key]: value };
       table.push(newTable);
     }
-    return table.toString();
+    if (nestedData !== null) {
+      console.log("has nested data");
+      const nested = createNestedTable(nestedData);
+      return { flatTable: table.toString(), nested };
+    }
+    return { flatTable: table.toString() };
   } else {
-    return "";
+    return { flatTable: "", nested: "" };
   }
 }
 
-function createNestedTable(nestedTableArray: IWarframeEventStatus): string {
-  const nestedTable = new Table();
-
-  return "";
+function createNestedTable(
+  nestedTableArray: Array<IWarframeEventStatus>
+): string {
+  const nestedKey = Object.keys(nestedTableArray)[0];
+  const nestedValue = nestedTableArray[nestedKey as any];
+  const table = new Table({ head: ["", nestedKey] });
+  nestedValue.forEach((value: object) => {
+    table.push(value);
+  });
+  return table.toString();
 }
 
 function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
@@ -58,6 +80,7 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
     "expiry",
     "inventory",
     "missions",
+    "type",
   ];
   let reducedData = {};
   let nestedData: IWarframeEventStatus | null = null;
@@ -86,7 +109,6 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
       }
     }
   }
-  console.log(nestedData);
   return { reducedData, nestedData };
 }
 
