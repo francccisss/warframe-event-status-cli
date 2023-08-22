@@ -2,12 +2,13 @@ import { traceDeprecation } from "process";
 import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
 import { format, parseISO } from "date-fns";
 import Table from "cli-table";
+import { isTypedArray } from "util/types";
 
 async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const flatVertTable = createFlatTable(data, "vert");
+  const flatVertTable = createFlatTable(data, "hor");
   console.log(flatVertTable);
 }
 
@@ -15,7 +16,8 @@ function createFlatTable(
   data: IWarframeEventStatus,
   type: "vert" | "hor" = "vert"
 ): string {
-  const reducedData = extractRelevantData(data);
+  const { reducedData, nestedData } = extractRelevantData(data);
+  console.log(nestedData);
   const reducedDataKeys = Object.keys(reducedData);
   if (type === "hor") {
     const createColWidths = reducedDataKeys.map(() => {
@@ -40,6 +42,12 @@ function createFlatTable(
   }
 }
 
+function createNestedTable(nestedTableArray: IWarframeEventStatus): string {
+  const nestedTable = new Table();
+
+  return "";
+}
+
 function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
   const relevantData: Array<string> = [
     "state",
@@ -49,8 +57,10 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
     "active",
     "expiry",
     "inventory",
+    "missions",
   ];
   let reducedData = {};
+  let nestedData: IWarframeEventStatus | null = null;
   const getKeys = Object.keys(data as object);
   if (relevantData.length !== 0) {
     for (let i = 0; i < relevantData.length; i++) {
@@ -58,8 +68,16 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
         const formatTime = format(parseISO(data[relevantData[i]]), "PPpp");
         reducedData = { [relevantData[i]]: formatTime, ...reducedData };
       }
+      if (Array.isArray(data[relevantData[i]])) {
+        nestedData = { [relevantData[i]]: data[relevantData[i]] };
+      }
+
+      // iterates through the rest of the property that is needed
       for (let j = 0; j < getKeys.length; j++) {
-        if (relevantData[i] === getKeys[j]) {
+        if (
+          relevantData[i] === getKeys[j] &&
+          !Array.isArray(data[relevantData[i]])
+        ) {
           reducedData = {
             [relevantData[i]]: data[relevantData[i]],
             ...reducedData,
@@ -68,13 +86,8 @@ function extractRelevantData(data: IWarframeEventStatus): IWarframeEventStatus {
       }
     }
   }
-
-  return reducedData;
-}
-
-function convertTimeFormat(time: string): string {
-  const newFormat = new Date(time);
-  return "";
+  console.log(nestedData);
+  return { reducedData, nestedData };
 }
 
 export default logCurrentEventStatus;
@@ -174,14 +187,3 @@ export default logCurrentEventStatus;
 //       credits: 1
 //     }
 //   ]}
-
-// ORB VALLIS
-// {
-//  id: 'vallisCycle1692584820000',
-//  expiry: '2023-08-21T02:33:48.000Z',
-//  isWarm: true,
-//  state: 'warm',
-//  activation: '2023-08-21T02:27:00.000Z',
-//  timeLeft: '1m 49s',
-//  shortString: '1m to Cold'
-// }
