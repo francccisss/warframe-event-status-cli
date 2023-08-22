@@ -10,7 +10,7 @@ async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const { flatTable, nested } = createFlatTable(data, "vert");
+  const { flatTable, nested } = createFlatTable(data, "hor");
   if (nested) {
     console.log(flatTable);
     console.log(nested);
@@ -24,7 +24,9 @@ function createFlatTable(
   type: "vert" | "hor" = "vert"
 ): { flatTable: string; nested?: string } {
   const { reducedData, nestedData } = extractRelevantData(data);
-  const reducedDataKeys = Object.keys(reducedData);
+  const reducedDataKeys = Object.keys(reducedData).map((name) =>
+    name.toUpperCase()
+  );
   if (type === "hor") {
     const createColWidths = reducedDataKeys.map(() => {
       return 20;
@@ -36,7 +38,6 @@ function createFlatTable(
     const newTable = Object.values(reducedData as object);
     table.push(newTable);
     if (nestedData !== null) {
-      console.log("has nested data");
       const nested = createNestedTable(nestedData);
       return { flatTable: table.toString(), nested };
     }
@@ -63,12 +64,13 @@ function createNestedTable(
 ): string {
   const nestedKey = Object.keys(nestedTableArray)[0];
   const nestedArray = nestedTableArray[nestedKey as any];
-  console.log(nestedArray);
   const table = new Table({
     head: [
       "",
-      nestedKey,
-      ...(nestedArray.length !== 0 ? Object.keys(nestedArray[0]) : []),
+      nestedKey.toUpperCase(),
+      ...(nestedArray.length !== 0
+        ? Object.keys(nestedArray[0]).map((name) => name.toUpperCase())
+        : []),
     ],
   });
 
@@ -79,7 +81,6 @@ function createNestedTable(
         ? tmpArr.push(Object.values(value)[j].toString())
         : tmpArr.push("missing data");
     }
-    console.log({ [i]: tmpArr });
     table.push({ [i]: tmpArr });
   });
   return table.toString();
