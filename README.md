@@ -1,10 +1,11 @@
 # warframe-event-status-cli
+
 A cli tool to fetch and display current in-game status of warframe inside of the terminal, I built this cli tool because I spend most of the time inside the terminal, and it feels cumbersome to keep on looking up when or what is currently happening in warframe (mostly for eidolon hunts) on a separate browser.
 
 ```
 $ npm install -g warframe-event-status-cli
 $ wf
-╭─────────── Fdiaz ───────────╮
+╭─────────────────────────────╮
 │                             │
 │                             │
 │                             │
@@ -15,7 +16,7 @@ $ wf
 │                             │
 │                             │
 ╰─────────────────────────────╯
-? Pick an event … 
+? Pick an event …
 ▸ cetus (eidolon-hunts)
   archon
   sortie
