@@ -58,8 +58,8 @@ function createFlatTable(
     const newTable = Object.values(reducedData as object);
     table.push(newTable);
     if (nestedData !== null) {
-      // const nested = createNestedTable(nestedData);
-      const nested = "";
+      const nested = createNestedTable(nestedData);
+      // const nested = "";
       return { flatTable: table.toString(), nested };
     }
     return { flatTable: table.toString() };
@@ -71,8 +71,8 @@ function createFlatTable(
     }
     if (nestedData !== null) {
       console.log("has nested data");
-      // const nested = createNestedTable(nestedData);
-      const nested = "";
+      const nested = createNestedTable(nestedData);
+      //  const nested = "";
       return { flatTable: table.toString(), nested };
     }
     return { flatTable: table.toString() };
@@ -96,6 +96,7 @@ function createNestedTable(
     "expiry",
     "inventory",
     "missions",
+    "variants",
     "type",
     "nightmare",
     "archwingRequired",
@@ -112,7 +113,6 @@ function createNestedTable(
   const { reducedData } = extractRelevantData(nestedArray[0], relevantData);
   const table = new Table({
     head: [
-      "",
       nestedTitle.toUpperCase(),
       ...(nestedArray.length !== 0
         ? Object.keys(reducedData).map((name) => name.toUpperCase())
