@@ -53,7 +53,6 @@ function createFlatTable(
     const newTable = Object.values(reducedData as object);
     table.push(newTable);
 
-    console.log(nestedData);
     if (nestedData !== null) {
       const nested = createNestedTable(nestedData);
       return { flatTable: table.toString(), nested };
@@ -66,7 +65,6 @@ function createFlatTable(
       table.push(newTable);
     }
     if (nestedData !== null) {
-      console.log("has nested data");
       const nested = createNestedTable(nestedData);
       return { flatTable: table.toString(), nested };
     }
@@ -109,7 +107,6 @@ function createNestedTable(
   // it is still proceeding
   // extractRelevantData needs an array of objects and will throw an error if there
   // are no objects within the array
-  console.log(nestedTableArray);
   const { reducedData } = extractRelevantData(nestedArray[0], relevantData);
   const table = new Table({
     head: [
@@ -146,7 +143,6 @@ function extractRelevantData(
   if (relevantData.length !== 0) {
     for (let i = 0; i < relevantData.length; i++) {
       if (relevantData[i] === "expiry" || relevantData[i] === "activation") {
-        console.log(data[relevantData[i]]);
         const formatTime = format(parseISO(data[relevantData[i]]), "PPpp");
         reducedData = { [relevantData[i]]: formatTime, ...reducedData };
       }

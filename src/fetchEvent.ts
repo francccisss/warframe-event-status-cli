@@ -9,7 +9,7 @@ async function fetchEventData(
   try {
     const getData = await fetch(`${api}${eventType}?language=${language}`);
     const parseToJson = await getData.json();
-    spinner.success({ text: "Current status", mark: "✔" });
+    spinner.success({ text: "Current Status", mark: "✔" });
     return parseToJson as IWarframeEventStatus;
   } catch (err) {
     console.log(err);
