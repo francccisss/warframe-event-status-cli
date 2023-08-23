@@ -1,16 +1,13 @@
-import { traceDeprecation } from "process";
 import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
 import { format, parseISO } from "date-fns";
 import Table from "cli-table";
-import { isTypedArray } from "util/types";
+import { kMaxLength } from "buffer";
 import { copyFileSync } from "fs";
-import { validateHeaderName } from "http";
 
 async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  console.log(data);
   const { flatTable, nested } = createFlatTable(data, "hor");
   if (nested) {
     console.log(flatTable);
@@ -57,9 +54,10 @@ function createFlatTable(
     });
     const newTable = Object.values(reducedData as object);
     table.push(newTable);
+
+    console.log(nestedData);
     if (nestedData !== null) {
       const nested = createNestedTable(nestedData);
-      // const nested = "";
       return { flatTable: table.toString(), nested };
     }
     return { flatTable: table.toString() };
@@ -72,7 +70,6 @@ function createFlatTable(
     if (nestedData !== null) {
       console.log("has nested data");
       const nested = createNestedTable(nestedData);
-      //  const nested = "";
       return { flatTable: table.toString(), nested };
     }
     return { flatTable: table.toString() };
@@ -150,7 +147,8 @@ function extractRelevantData(
       //   reducedData = { [relevantData[i]]: formatTime, ...reducedData };
       // }
       if (Array.isArray(data[relevantData[i]])) {
-        nestedData = { [relevantData[i]]: data[relevantData[i]] };
+        if (data[relevantData[i]].length !== 0)
+          nestedData = { [relevantData[i]]: data[relevantData[i]] };
       }
 
       // iterate through the remaining properties that are needed
