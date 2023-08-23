@@ -17,9 +17,14 @@ event.on("start", async (warframeEvents, queryLanguages) => {
         padding: { top: 4, bottom: 4, left: 2, right: 2 },
         borderStyle: "round",
     })));
-    const input = await getUserInput(warframeEvents, queryLanguages);
-    console.log(input);
-    event.emit("fetch", warframeAPI, input);
+    try {
+        const input = await getUserInput(warframeEvents, queryLanguages);
+        console.log(input);
+        event.emit("fetch", warframeAPI, input);
+    }
+    catch (err) {
+        return;
+    }
 });
 event.emit("start", warframeEvents, queryLanguages);
 event.on("fetch", async (api, input) => {

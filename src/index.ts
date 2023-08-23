@@ -29,9 +29,13 @@ event.on(
         })
       )
     );
-    const input = await getUserInput(warframeEvents, queryLanguages);
-    console.log(input);
-    event.emit("fetch", warframeAPI, input);
+    try {
+      const input = await getUserInput(warframeEvents, queryLanguages);
+      console.log(input);
+      event.emit("fetch", warframeAPI, input);
+    } catch (err) {
+      return;
+    }
   }
 );
 event.emit("start", warframeEvents, queryLanguages);
