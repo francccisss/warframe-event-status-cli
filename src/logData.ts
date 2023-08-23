@@ -103,6 +103,13 @@ function createNestedTable(
   ];
   const nestedTitle = Object.keys(nestedTableArray)[0];
   const nestedArray = nestedTableArray[nestedTitle as any];
+  // its maybe because its trying to extract an empty array
+  // if the nested objects are of length 0
+  // event if it is being checked above to not execute this function
+  // it is still proceeding
+  // extractRelevantData needs an array of objects and will throw an error if there
+  // are no objects within the array
+  console.log(nestedTableArray);
   const { reducedData } = extractRelevantData(nestedArray[0], relevantData);
   const table = new Table({
     head: [
