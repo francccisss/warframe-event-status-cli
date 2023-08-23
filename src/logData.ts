@@ -1,14 +1,12 @@
 import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
 import { format, parseISO } from "date-fns";
 import Table from "cli-table";
-import { kMaxLength } from "buffer";
-import { copyFileSync } from "fs";
 
 async function logCurrentEventStatus(
   data: IWarframeEventStatus,
   wfEvents: IWarframeEvents
 ): Promise<void> {
-  const { flatTable, nested } = createFlatTable(data, "hor");
+  const { flatTable, nested } = createFlatTable(data, "vert");
   if (nested) {
     console.log(flatTable);
     console.log(nested);
@@ -88,9 +86,7 @@ function createNestedTable(
     "state",
     "timeLeft",
     "location",
-    "activation",
     "active",
-    "expiry",
     "inventory",
     "missions",
     "variants",
@@ -142,10 +138,11 @@ function extractRelevantData(
   const getKeys = Object.keys(data);
   if (relevantData.length !== 0) {
     for (let i = 0; i < relevantData.length; i++) {
-      // if (relevantData[i] === "expiry" || relevantData[i] === "activation") {
-      //   const formatTime = format(parseISO(data[relevantData[i]]), "PPpp");
-      //   reducedData = { [relevantData[i]]: formatTime, ...reducedData };
-      // }
+      if (relevantData[i] === "expiry" || relevantData[i] === "activation") {
+        console.log(data[relevantData[i]]);
+        const formatTime = format(parseISO(data[relevantData[i]]), "PPpp");
+        reducedData = { [relevantData[i]]: formatTime, ...reducedData };
+      }
       if (Array.isArray(data[relevantData[i]])) {
         if (data[relevantData[i]].length !== 0)
           nestedData = { [relevantData[i]]: data[relevantData[i]] };
