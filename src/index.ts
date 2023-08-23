@@ -6,6 +6,7 @@ import { getUserInput } from "./inputs.js";
 import boxen from "boxen";
 import { IUserInput, IWarframeEvents, Language } from "./types.js";
 import logCurrentEventStatus from "./logData.js";
+import chalk from "chalk";
 
 const require = createRequire(import.meta.url);
 const warframeEvents = require("./app-queries/events.json");
@@ -20,12 +21,13 @@ event.on(
     queryLanguages: Array<Language>
   ) => {
     console.log(
-      boxen("Warframe Event Status CLI", {
-        title: "Fdiaz",
-        titleAlignment: "center",
-        padding: { top: 4, bottom: 4, left: 2, right: 2 },
-        borderStyle: "round",
-      })
+      chalk.red.bold(
+        boxen("Warframe Event Status CLI", {
+          titleAlignment: "center",
+          padding: { top: 4, bottom: 4, left: 2, right: 2 },
+          borderStyle: "round",
+        })
+      )
     );
     const input = await getUserInput(warframeEvents, queryLanguages);
     console.log(input);

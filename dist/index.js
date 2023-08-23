@@ -5,18 +5,18 @@ import fetchEventData from "./fetchEvent.js";
 import { getUserInput } from "./inputs.js";
 import boxen from "boxen";
 import logCurrentEventStatus from "./logData.js";
+import chalk from "chalk";
 const require = createRequire(import.meta.url);
 const warframeEvents = require("./app-queries/events.json");
 const queryLanguages = require("./app-queries/languages.json");
 const event = new EventEmitter();
 const warframeAPI = `https://api.warframestat.us/pc/`; //path parameters+language
 event.on("start", async (warframeEvents, queryLanguages) => {
-    console.log(boxen("Warframe Event Status CLI", {
-        title: "Fdiaz",
+    console.log(chalk.red.bold(boxen("Warframe Event Status CLI", {
         titleAlignment: "center",
         padding: { top: 4, bottom: 4, left: 2, right: 2 },
         borderStyle: "round",
-    }));
+    })));
     const input = await getUserInput(warframeEvents, queryLanguages);
     console.log(input);
     event.emit("fetch", warframeAPI, input);

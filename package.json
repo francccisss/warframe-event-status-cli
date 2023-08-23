@@ -1,7 +1,7 @@
 {
   "name": "warframe-event-status-cli",
-  "version": "1.0.0",
-  "description": "Rebuilding my old cli project with typescript",
+  "version": "1.0.1",
+  "description": "A Warframe Cli tool to fetch and display current events in the comfort of your terminal",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
@@ -11,7 +11,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc && npx eslint ."
   },
-  "keywords": [],
+  "keywords": [
+    "warframe",
+    "warframe-cli",
+    "warframe-status",
+    "warframe-events",
+    "warframe-eidolon",
+    "warframe-cli"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -23,6 +30,7 @@
   },
   "dependencies": {
     "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
     "cli-table": "^0.3.11",
     "date-fns": "^2.30.0",
     "enquirer": "^2.4.1",

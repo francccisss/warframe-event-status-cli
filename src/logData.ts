@@ -1,6 +1,7 @@
 import { IWarframeEventStatus, IWarframeEvents } from "./types.js";
 import { format, parseISO } from "date-fns";
 import Table from "cli-table";
+import chalk from "chalk";
 
 async function logCurrentEventStatus(
   data: IWarframeEventStatus,
